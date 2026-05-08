@@ -1,13 +1,11 @@
 # Can Machines Pass the Civil Service Exam?
 ## Complex Logical Inference with Fine-Tuned Diffusion Models
 
-This project explores whether diffusion language models can handle complex Chinese logical reasoning tasks from the Civil Service Examination.  
-We construct a reasoning dataset from Chinese Civil Service Examination questions and evaluate different diffusion-based models under fine-tuning and few-shot settings.
+This project explores whether diffusion language models can handle complex Chinese logical reasoning tasks from the Civil Service Examination. We construct a reasoning dataset from Chinese Civil Service Examination questions and evaluate different diffusion-based models under fine-tuning and few-shot settings.
 
 ## Project Overview
 
-Chinese logical reasoning is challenging because it requires models to understand abstract relations, compare options, and select the most logically consistent answer.  
-In this project, we focus on Civil Service Examination-style multiple-choice questions and investigate whether diffusion language models can improve reasoning performance through task-specific adaptation.
+Chinese logical reasoning is challenging because it requires models to understand abstract relations, compare options, and select the most logically consistent answer. In this project, we focus on Civil Service Examination-style multiple-choice questions and investigate whether diffusion language models can improve reasoning performance through task-specific adaptation.
 
 The project mainly includes:
 
@@ -16,6 +14,16 @@ The project mainly includes:
 - Few-shot evaluation of different diffusion-based models
 - Comparison between fine-tuned small models and larger few-shot models
 - Temperature control experiment for diffusion language model generation
+
+## Fine-tuned Model
+
+The final fine-tuned checkpoint is hosted on Hugging Face:
+
+**Model link:** https://huggingface.co/MoonQ2003/Qwen_finetuned
+
+Because model checkpoints are usually large, this GitHub repository does not include all training checkpoints. Only the final checkpoint is preserved and uploaded to Hugging Face. Intermediate folders such as `checkpoint-200`, `checkpoint-300`, ..., `checkpoint-2490` are not included in the repository.
+
+If you want to use the fine-tuned model, please download it from the Hugging Face link above instead of looking for checkpoint files in this repository.
 
 ## Models
 
@@ -99,8 +107,7 @@ We use two main metrics:
 - Accuracy
 - F1 Score
 
-Accuracy measures whether the predicted option is correct.  
-F1 Score gives a more balanced view of model performance, especially when predictions are unevenly distributed.
+Accuracy measures whether the predicted option is correct. F1 Score gives a more balanced view of model performance, especially when predictions are unevenly distributed.
 
 ## Main Results
 
@@ -115,23 +122,6 @@ The fine-tuned Qwen-0.5B diffusion model achieves better parameter efficiency th
 | BERT diffusion (few-shot) | 0.0956 | 0.07 | 0.15B | 0.467 |
 
 Few-shot results show that larger and instruction-tuned diffusion models benefit more from demonstrations, while weaker models may not improve consistently.
-
-## Few-shot Results
-
-| Few-shot setting | Model name | F1 Score | Accuracy |
-|---|---|---:|---:|
-| 1-shot | Classical QWen diffusion (few-shot) | 0.1169 | 0.1000 |
-| 1-shot | Classical LLaDA diffusion (few-shot) | 0.5170 | 0.4000 |
-| 1-shot | LLaDA instructed diffusion (few-shot) | 0.8686 | 0.8700 |
-| 1-shot | BERT diffusion (few-shot) | 0.0810 | 0.0600 |
-| 3-shot | Classical QWen diffusion (few-shot) | 0.1771 | 0.1600 |
-| 3-shot | Classical LLaDA diffusion (few-shot) | 0.6165 | 0.4800 |
-| 3-shot | LLaDA instructed diffusion (few-shot) | 0.8791 | 0.8800 |
-| 3-shot | BERT diffusion (few-shot) | 0.0956 | 0.0700 |
-| 5-shot | Classical QWen diffusion (few-shot) | 0.1466 | 0.1300 |
-| 5-shot | Classical LLaDA diffusion (few-shot) | 0.7248 | 0.6100 |
-| 5-shot | LLaDA instructed diffusion (few-shot) | 0.8809 | 0.8800 |
-| 5-shot | BERT diffusion (few-shot) | 0.0000 | 0.0000 |
 
 ## Temperature Experiment
 
@@ -162,9 +152,6 @@ The best performance is achieved at temperature `0.5`, suggesting that moderate 
 │   ├── fewshot_eval.py
 │   └── temperature_eval.py
 │
-├── models/
-│   └── checkpoints/
-│
 ├── results/
 │   ├── fewshot_results.csv
 │   ├── temperature_results.csv
@@ -177,7 +164,7 @@ The best performance is achieved at temperature `0.5`, suggesting that moderate 
 └── README.md
 ```
 
-Please adjust the folder names according to the actual project files.
+The complete model weights are not stored directly in this repository. Please download the final fine-tuned model from Hugging Face.
 
 ## Installation
 
@@ -204,20 +191,21 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ## How to Run
 
-### 1. Fine-tune the model
+### 1. Download the fine-tuned model
 
-```bash
-python scripts/train.py \
-  --train_file data/train.jsonl \
-  --model_name_or_path Qwen-0.5B-diffusion \
-  --output_dir models/checkpoints/qwen_diffusion_finetuned
+The fine-tuned model can be downloaded from Hugging Face:
+
+```text
+https://huggingface.co/MoonQ2003/Qwen_finetuned
 ```
+
+You can either download it manually from the website or use the Hugging Face Hub tools.
 
 ### 2. Evaluate the fine-tuned model
 
 ```bash
 python scripts/evaluate.py \
-  --model_name_or_path models/checkpoints/qwen_diffusion_finetuned \
+  --model_name_or_path MoonQ2003/Qwen_finetuned \
   --test_file data/test.jsonl
 ```
 
@@ -234,7 +222,7 @@ python scripts/fewshot_eval.py \
 
 ```bash
 python scripts/temperature_eval.py \
-  --model_name_or_path models/checkpoints/qwen_diffusion_finetuned \
+  --model_name_or_path MoonQ2003/Qwen_finetuned \
   --test_file data/test.jsonl \
   --temperatures 0.0 0.3 0.5 0.7 1.0
 ```
